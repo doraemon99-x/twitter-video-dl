@@ -1,22 +1,30 @@
-import argparse
+import os
+import re
+import sys
+from pathlib import Path
 
-import src.twitter_video_dl.twitter_video_dl as tvdl
+import bs4
+import requests
 import telebot
+from tqdm import tqdm
 
 TOKEN = '6529702195:AAFuDZiOiOXh116Ohsg3wxI86_ymDmUZQYc'
 bot = telebot.TeleBot(TOKEN)
 
+# Fungsi download_video dan download_twitter_video Anda di sini
+
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "Halo! Saya adalah bot Anda. Kirimkan saya URL Twitter dan saya akan mendownload videonya untuk Anda.")
+    bot.reply_to(message, "Halo! Saya adalah bot Twitter Video Downloader. Kirimkan saya URL video Twitter dan saya akan mengunduhnya untuk Anda.")
 
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda m: True)
 def echo_all(message):
-    twitter_url = message.text
-    file_name = "twittervid.mp4"
-
-    tvdl.download_video(twitter_url, file_name)
-    video = open(file_name, 'rb')
-    bot.send_video(message.chat.id, video)
+    url = message.text
+    if url:
+        file_path = download_twitter_video(url)
+        with open(file_path, 'rb') as video:
+            bot.send_video(message.chat.id, video)
+    else:
+        bot.reply_to(message, "URL video Twitter tidak valid.")
 
 bot.polling()
