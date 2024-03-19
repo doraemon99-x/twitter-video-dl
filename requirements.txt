@@ -1,2 +1,4 @@
-telebot
 requests
+telebot
+tqdm
+bs4
