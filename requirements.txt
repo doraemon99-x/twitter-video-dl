@@ -1,1 +1,5 @@
+telebot
+argparse
+src.twitter_video_dl.twitter_video_dl
+twitter-video-downloader
 requests
